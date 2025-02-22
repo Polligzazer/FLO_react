@@ -16,7 +16,7 @@ const App: React.FC = () => {
     });
     return () => unsubscribe();
   }, []);
-
+// 
   return (
     <div className="container mt-5">
       <h2>Firebase Authentication</h2>
