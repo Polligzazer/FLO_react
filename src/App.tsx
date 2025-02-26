@@ -1,52 +1,72 @@
-import { useState, useEffect } from "react";
-import { signup } from "./auth/signup";
-import { login } from "./auth/login";
-import { logout } from "./auth/logout";
-import { auth } from "./firebase";
-import { onAuthStateChanged, User } from "firebase/auth";
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import HomePage from './pages/HomePage';
+import ReportForm from './pages/ReportForm';
+import Post from './pages/Post';
+import { auth, onAuthStateChangedListener } from './firebase';
 
-const App: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState<User | null>(null);
+function App() {
+  const [user, setUser] = useState<any | null>(null);
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChangedListener((currentUser) => {
       setUser(currentUser);
+      // Redirect to home page if user is already logged in
+      if (currentUser) {
+        setShowLogin(false);
+      } else {
+        setShowLogin(true);
+      }
     });
     return () => unsubscribe();
   }, []);
-// 
+
+  const handleLoginSuccess = () => {
+    setShowLogin(false);
+  };
+
+  const handleSignupSuccess = () => {
+    setShowLogin(false);
+  };
+
+  const handleLogout = () => {
+    auth.signOut().then(() => {
+      setUser(null);
+      setShowLogin(true);
+    });
+  };
+
   return (
-    <div className="container mt-5">
-      <h2>Firebase Authentication</h2>
-      {user ? (
-        <div>
-          <p>Welcome, {user.email}</p>
-          <button className="btn btn-danger" onClick={logout}>Logout</button>
-        </div>
-      ) : (
-        <div>
-          <input
-            className="form-control mb-2"
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+    <BrowserRouter>
+      <div>
+        <Routes>
+        <Route path="/home" element={user ? <HomePage handleLogout={handleLogout} /> : <Navigate to="/" />} />
+          <Route path="/report" element={user ? <ReportForm /> : <Navigate to="/" />} />
+          <Route
+            path="/"
+            element={user ? <Navigate to="/home" /> : (
+              <>
+                {showLogin ? (
+                  <>
+                    <Login onLoginSuccess={handleLoginSuccess} />
+                    <button onClick={() => setShowLogin(false)}>Go to Signup</button>
+                  </>
+                ) : (
+                  <>
+                    <Signup onSignupSuccess={handleSignupSuccess} />
+                    <button onClick={() => setShowLogin(true)}>Go to Login</button>
+                  </>
+                )}
+              </>
+            )}
           />
-          <input
-            className="form-control mb-2"
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button className="btn btn-primary me-2" onClick={() => signup(email, password)}>Sign Up</button>
-          <button className="btn btn-success" onClick={() => login(email, password)}>Login</button>
-        </div>
-      )}
-    </div>
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
-};
+}
 
 export default App;
