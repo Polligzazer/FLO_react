@@ -4,7 +4,6 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import HomePage from './pages/HomePage';
 import ReportForm from './pages/ReportForm';
-import Post from './pages/Post';
 import { auth, onAuthStateChangedListener } from './firebase';
 
 function App() {
