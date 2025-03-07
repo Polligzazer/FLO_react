@@ -4,10 +4,6 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import HomePage from './pages/HomePage';
 import ReportForm from './pages/ReportForm';
-<<<<<<< HEAD
-=======
-import MainContent from './MainContent';
->>>>>>> d273afd36c1290e95dff2b7a76ab4fde52ea95b9
 import { auth, onAuthStateChangedListener } from './firebase';
 
 function App() {
