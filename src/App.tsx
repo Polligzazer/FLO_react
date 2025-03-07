@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import HomePage from './pages/HomePage';
 import ReportForm from './pages/ReportForm';
-import { NavbarContainer, NavbarContent } from './utilities/Navbar';
 import { auth, onAuthStateChangedListener } from './firebase';
 
 function App() {
@@ -64,13 +63,6 @@ function App() {
   return (
     <BrowserRouter>
       <div>
-      <NavbarContainer isVisible={navbarVisible} ref={navbarRef}>
-          <NavbarContent>
-            {/* Your navbar content here */}
-            <h1>My App</h1>
-            {/* Add other elements like links, buttons */}
-          </NavbarContent>
-        </NavbarContainer>
         <Routes>
         <Route path="/home" element={user ? <HomePage handleLogout={handleLogout} /> : <Navigate to="/" />} />
           <Route path="/report" element={user ? <ReportForm /> : <Navigate to="/" />} />
