@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { checkUserRole, fetchItemReports } from '../firebase';
 import { onAuthStateChangedListener } from '../firebase';
