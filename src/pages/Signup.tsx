@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { createUser } from '../firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
 import 'bootstrap/dist/css/bootstrap.css';
 import fLogo from '../assets/FLO_LOGO.png';
 import '../style/Signup.css';
+import { useNavigate } from 'react-router-dom';
 
-interface SignupProps {
-  onSignupSuccess: () => void;
-}
-
-function Signup({ onSignupSuccess }: { onSignupSuccess: () => void }) {
+function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,16 +23,13 @@ function Signup({ onSignupSuccess }: { onSignupSuccess: () => void }) {
     }
 
     try {
-      const success = await createUser(email, password);
-      if (success) {
-        onSignupSuccess();
-      } else {
-        setError('Signup failed. Please try again.');
-      }
+      await createUserWithEmailAndPassword(auth, email, password);
+      navigate('/main'); // Redirect to /main after successful signup
     } catch (error: any) {
       setError(error.message);
     }
   };
+
 
   return (
     <div className="container-fluid align-items-center justify-content-center border border-primary p-0">
